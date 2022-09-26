@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.4.1",
-    "dotenv": "^16.0.2"
+    "dotenv": "^16.0.2",
+    "miner-issuance-contracts-v2": "github:minermint/miner-issuance-contracts-v2"
   }
 }

@@ -41,10 +41,8 @@ const config: HardhatUserConfig = {
   },
   namedAccounts: {
     deployer: 0,
-    requester: 1,
-    fulfiller: 2,
-    alice: 3,
-    bob: 4,
+    alice: 1,
+    bob: 2,
   },
 };
 

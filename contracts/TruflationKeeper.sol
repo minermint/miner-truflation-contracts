@@ -3,11 +3,12 @@ pragma solidity ^0.8.13;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+import "miner-issuance-contracts-v2/contracts/IUSDMinerPair.sol";
 
-contract TruflationKeeper is ChainlinkClient, ConfirmedOwner {
+contract TruflationKeeper is ChainlinkClient, ConfirmedOwner, IUSDMinerPair {
     using Chainlink for Chainlink.Request;
 
-    uint256 public price;
+    uint256 private price;
     address public oracleId;
     string public jobId;
     uint256 public fee;
@@ -30,7 +31,7 @@ contract TruflationKeeper is ChainlinkClient, ConfirmedOwner {
         fee = fee_;
     }
 
-    function requestPrice() public returns (bytes32 requestId) {
+    function requestPrice() external returns (bytes32 requestId) {
         Chainlink.Request memory req = buildChainlinkRequest(
             bytes32(bytes(jobId)),
             address(this),
@@ -45,28 +46,36 @@ contract TruflationKeeper is ChainlinkClient, ConfirmedOwner {
     }
 
     function fulfillPrice(bytes32 requestId, bytes memory inflation)
-        public
+        external
         recordChainlinkFulfillment(requestId)
     {
         price = uint256(bytes32((inflation)));
     }
 
+    function getPrice() external view returns (uint256) {
+        return price;
+    }
+
     function changeOracle(address newOracle)
-        public
+        external
         onlyOwner
     {
         oracleId = newOracle;
     }
 
-    function changeJobId(string memory newJobId) public onlyOwner {
+    function changeJobId(string memory newJobId) external onlyOwner {
         jobId = newJobId;
     }
 
-    function getChainlinkToken() public view returns (address) {
+    function changeFee(uint256 fee_) external onlyOwner {
+        fee = fee_;
+    }
+
+    function getChainlinkToken() external view returns (address) {
         return chainlinkTokenAddress();
     }
 
-    function withdrawLink() public onlyOwner {
+    function withdrawLink() external onlyOwner {
         LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
         require(
             link.transfer(msg.sender, link.balanceOf(address(this))),
