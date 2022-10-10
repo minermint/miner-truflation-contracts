@@ -1,8 +1,7 @@
 import { deployments, getNamedAccounts, ethers } from "hardhat";
 import chai, { expect } from "chai";
 
-import { deployMockContract } from "@ethereum-waffle/mock-contract";
-import ABIIERC20 from "@chainlink/contracts/abi/v0.4/ERC20.json"
+import ABIIERC20 from "@chainlink/contracts/abi/v0.4/ERC20.json";
 import { testConfig } from "../config";
 
 import dirtyChai from "dirty-chai";
@@ -21,7 +20,7 @@ describe("TruflationKeeper", function () {
     keeper = await ethers.getContract("TruflationKeeper");
   });
 
-  it.skip("should deploy a keeper", async () => {
+  it("should request a price update", async () => {
     const link = await ethers.getContractAt(
       ABIIERC20,
       await keeper.getChainlinkToken()
@@ -31,32 +30,7 @@ describe("TruflationKeeper", function () {
 
     await keeper.requestPrice();
 
-    const filter = {
-      topics: [ethers.utils.id("ChainlinkFulfilled(uint256)")],
-    };
-
-    ethers.provider.on(filter, async (log, _event) => {
-      console.log(log);
-    });
-
-    // await new Promise((r) => setTimeout(r, 30000));
-
-    const provider = new ethers.providers.JsonRpcProvider(process.env.URL);
-
-    const artifact = await deployments.getArtifact("TruflationKeeper");
-
-    const rinkebyKeeper = new ethers.Contract(
-      testConfig.link,
-      artifact.abi,
-      provider
-    );
-
-    console.log(
-      "Exchange Rate",
-      ethers.utils.defaultAbiCoder
-        .decode(["uint256"], await rinkebyKeeper.getPrice())
-        .toString()
-    );
+    expect(await keeper.getPrice()).to.be.equal(ethers.utils.parseEther("3"));
   });
 
   it("should change the oracle id", async () => {
@@ -99,9 +73,7 @@ describe("TruflationKeeper", function () {
       keeper
         .connect(await ethers.getSigner(alice))
         .fulfillPrice(ethers.utils.formatBytes32String(""), priceAsBytes)
-    ).to.revertedWith(
-      "Source must be the oracle of the request"
-    );
+    ).to.revertedWith("Source must be the oracle of the request");
   });
 
   it("should not allow non-owner to change oracle", async () => {
@@ -109,24 +81,20 @@ describe("TruflationKeeper", function () {
       keeper
         .connect(await ethers.getSigner(alice))
         .changeOracle(ethers.constants.AddressZero)
-    ).to.revertedWith(
-      "Only callable by owner"
-    );
+    ).to.revertedWith("Only callable by owner");
   });
 
   it("should not allow non-owner to change job id", async () => {
     await expect(
       keeper.connect(await ethers.getSigner(alice)).changeJobId("")
-    ).to.revertedWith(
-      "Only callable by owner"
-    );
+    ).to.revertedWith("Only callable by owner");
   });
 
   it("should not allow non-owner to change fee", async () => {
     await expect(
-      keeper.connect(await ethers.getSigner(alice)).changeFee(ethers.utils.parseEther("0.1"))
-    ).to.revertedWith(
-      "Only callable by owner"
-    );
+      keeper
+        .connect(await ethers.getSigner(alice))
+        .changeFee(ethers.utils.parseEther("0.1"))
+    ).to.revertedWith("Only callable by owner");
   });
 });

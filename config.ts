@@ -2,9 +2,11 @@ import "dotenv/config";
 
 export const mnemonic: any = process.env.MNEMONIC;
 export const etherscanAPIKey: any = process.env.ETHERSCAN_API;
+export const developmentChains: string[] = ["hardhat", "localhost"];
 
 export interface networkConfigItem {
   url: string;
+  inflationOracle? : string;
 }
 
 export interface networkConfigInfo {
@@ -13,10 +15,11 @@ export interface networkConfigInfo {
 
 export const networkConfig: networkConfigInfo = {
   hardhat: {
-    url: process.env.URL || "",
+    url: process.env.URL || ""
   },
   goerli: {
     url: process.env.URL || "",
+    inflationOracle: "0xcf72083697aB8A45905870C387dC93f380f2557b"
   },
 };
 

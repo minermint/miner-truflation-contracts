@@ -56,10 +56,7 @@ contract TruflationKeeper is ChainlinkClient, ConfirmedOwner, IUSDMinerPair {
         return price;
     }
 
-    function changeOracle(address newOracle)
-        external
-        onlyOwner
-    {
+    function changeOracle(address newOracle) external onlyOwner {
         oracleId = newOracle;
     }
 
