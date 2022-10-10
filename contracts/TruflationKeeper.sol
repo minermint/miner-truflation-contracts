@@ -74,9 +74,6 @@ contract TruflationKeeper is ChainlinkClient, ConfirmedOwner, IUSDMinerPair {
 
     function withdrawLink() external onlyOwner {
         LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
-        require(
-            link.transfer(msg.sender, link.balanceOf(address(this))),
-            "Unable to transfer"
-        );
+        link.transfer(msg.sender, link.balanceOf(address(this)));
     }
 }
