@@ -38,9 +38,9 @@ contract OracleMock {
         bytes32 requestId = keccak256(abi.encodePacked(sender, nonce));
         (bool success, ) = sender.call(
             abi.encodeWithSignature(
-                "fulfillPrice(bytes32,bytes)",
+                "fulfillYoyInflation(bytes32,bytes)",
                 requestId,
-                abi.encodePacked(uint256(3e18))
+                abi.encodePacked(uint256(1e18))
             )
         );
 

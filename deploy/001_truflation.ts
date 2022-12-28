@@ -8,20 +8,22 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts();
 
-  let oracle: string|null = null;
+  let oracle: string | null = null;
 
   if (developmentChains.includes(network.name)) {
     console.log("deploying unit test oracle...");
-    oracle = (await deploy("OracleMock", {
-      from: deployer,
-    })).address;
+    oracle = (
+      await deploy("OracleMock", {
+        from: deployer,
+      })
+    ).address;
   }
 
   await deploy("TruflationKeeper", {
     from: deployer,
     args: [
       oracle || networkConfig[network.name].inflationOracle,
-      "f5da3804575a44a082347fababc4f11d",
+      "d220e5e687884462909a03021385b7ae" /*"f5da3804575a44a082347fababc4f11d". */,
       ethers.utils.parseEther("0.01"),
     ],
   });

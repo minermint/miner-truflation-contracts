@@ -6,7 +6,7 @@ export const developmentChains: string[] = ["hardhat", "localhost"];
 
 export interface networkConfigItem {
   url: string;
-  inflationOracle? : string;
+  inflationOracle?: string;
 }
 
 export interface networkConfigInfo {
@@ -15,11 +15,11 @@ export interface networkConfigInfo {
 
 export const networkConfig: networkConfigInfo = {
   hardhat: {
-    url: process.env.URL || ""
+    url: process.env.URL || "",
   },
   goerli: {
     url: process.env.URL || "",
-    inflationOracle: "0xcf72083697aB8A45905870C387dC93f380f2557b"
+    inflationOracle: "0x6888BdA6a975eCbACc3ba69CA2c80d7d7da5A344",
   },
 };
 

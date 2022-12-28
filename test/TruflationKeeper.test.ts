@@ -28,7 +28,7 @@ describe("TruflationKeeper", function () {
 
     await link.transfer(keeper.address, ethers.utils.parseEther("0.01"));
 
-    await keeper.requestPrice();
+    await keeper.requestYoyInflation();
 
     expect(await keeper.getPrice()).to.be.equal(ethers.utils.parseEther("3"));
   });
@@ -68,11 +68,17 @@ describe("TruflationKeeper", function () {
   });
 
   it("should not allow anyone but oracle to fulfill price", async () => {
-    const priceAsBytes = ethers.utils.defaultAbiCoder.encode(["uint256"], [0]);
+    const inflationAsBytes = ethers.utils.defaultAbiCoder.encode(
+      ["uint256"],
+      [0]
+    );
     await expect(
       keeper
         .connect(await ethers.getSigner(alice))
-        .fulfillPrice(ethers.utils.formatBytes32String(""), priceAsBytes)
+        .fulfillYoyInflation(
+          ethers.utils.formatBytes32String(""),
+          inflationAsBytes
+        )
     ).to.revertedWith("Source must be the oracle of the request");
   });
 
