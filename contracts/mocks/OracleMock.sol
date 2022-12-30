@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.13;
 
 import "hardhat/console.sol";
@@ -40,7 +40,7 @@ contract OracleMock {
             abi.encodeWithSignature(
                 "fulfillYoyInflation(bytes32,bytes)",
                 requestId,
-                abi.encodePacked(uint256(1e18))
+                abi.encodePacked(int256(0))
             )
         );
 
